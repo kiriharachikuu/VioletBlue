@@ -70,14 +70,21 @@ if (is_mobile_request()) { ?>
 
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- 让 IE8/9 支持媒体查询，从而兼容栅格 -->
+		<!--[if lt IE 9]>
+		  <script src="https://cdn.staticfile.net/html5shiv/r29/html5.min.js"></script>
+		  <script src="https://cdn.staticfile.net/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
         <meta name="referrer" content="no-referrer">
         <meta name="description" content="<?php echo $siteInfo['content']['detail']; ?>">
         <link rel="shortcut icon" href="./favicon.ico">
         <title><?php echo $siteInfo['content']['title']; ?></title>
-        <script src="./static/js/script.min.js"></script>
-        <link rel="stylesheet" href="./static/css/alertify.min.css" />
-        <script src="./static/js/alertify.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="./static/css/style.min.css">
+        <!-- 引入 layui.css -->
+        <link href="//unpkg.com/layui@2.9.17/dist/css/layui.css" rel="stylesheet">
+		<script src="./static/js/script.min.js"></script>
+		<link rel="stylesheet" href="./static/css/alertify.min.css" />
+		<script src="./static/js/alertify.min.js"></script>
     </head>
 <?php require("./static/html/pc_body.html");
     if (!empty($siteInfo['content']['icp'])) {

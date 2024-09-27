@@ -1,57 +1,194 @@
-
 <body>
+	<style>
+		/*设置body背景图片、layui改色*/
+		body {
+			overflow-x: hidden;
+			background-image: url("https://hbimg.huaban.com/8d830bd47c35779928c4f6cd3dbb4b96fb97e0a534481-8aFdPB");
+			background-repeat: no-repeat;
+		}	
+		.layui-elem-quote {border-left: 5px solid #1e9fff;}	
+		.layui-input:focus, .layui-textarea:focus{border-color: #1e9fff !important;}
+		/*全局色彩更改*/
+		:root {
+			--title: #000;
+			--line-color: #1e9fff;
+			--all-text: grey;
+			--scroll-bar: #1e9fff;
+			--tag-text: rgb(255, 255, 255);
+			--tag-background: rgba(102, 204, 255, 1.0);
+			--song-card: #c0e8ff52;
+			--song-card-claim: rgba(255, 255, 255, 0.7);
+			--type: #d2d2d2;
+			--type-selected: #1e9fff;
+			--button-color: #1e9fff;
+		}
+		/*主播介绍、主播公告样式*/
+		.biocard {height: 100%;width: 100%;}
+		.nickname {font-size: 1.2vw;font-weight: 750;color: var(--title);width: 16vw;text-align: center;margin: 0 3vw 0 3vw;-webkit-line-clamp: 1;}
+		.face {width: 12vh;height: 12vh;margin: 1vh calc(11vw - 6vh) 1vh calc(11vw - 6vh);border-radius: 50%;}
+		.user_data_box {width: 20vw;height: 6vh;margin: 1.5vh 1vw 0 1vw;overflow: hidden;}
+		.user_data_part {width: calc((20vw - 2px) / 3);height: 5vh;float: left;text-align: center }.user_data_cutline {width: 1px;height: 5vh;float: left;background-color: #dcdcdc }
+		.user_data_title, .user_data_value {font-weight: 750;color: var(--title);line-height: 2.45vh;width: calc((20vw - 2px) / 3);-webkit-line-clamp: 1 }
+		.user_data_title {margin-top: .1vh;font-size: 1vw }
+		.user_data_value {font-size: .9vw }
+		.sign {font-size: .8vw;width: 20vw;margin: 1vh 1vw 1vh 1vw;line-height: 2vh;-webkit-line-clamp: 3;color: var(--all-text);}
+		.notice {width: 100%;height: 100%;-webkit-line-clamp: 4;line-height: 2vh;font-size: .8vw;color: var(--all-text);}
+		.nickname, .notice, .sign, .user_data_title, .user_title_value {overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;word-break: break-all;}
+		/*搜索样式*/
+		.search_button {width: 4vw;height: 3.7vh;line-height: 3vh;font-size: .8vw;background-color: var(--button-color);color: white;border: 0;border-radius: 5px;cursor: pointer;letter-spacing: 2px;float: left;outline: 0;}.search_button:hover {background-color: var(--button-color) }
+		/*标签样式*/
+		.type_list {overflow: hidden;width: 100%;height: 100%;}.type, .type_selected {text-align: center;line-height: 3.5vh;min-width: 2.5vh;font-size: 18px;letter-spacing: 2px;border-radius: 5px;border: solid;border-width: 0.3vh 0.5vw;margin: 0px 10px 10px 10px;overflow: hidden;float: left;list-style-type: none;}.type {background-color: var(--type);border-color: var(--type);color: #000 }.type_selected {background-color: var(--type-selected);border-color: var(--type-selected);color: #fff }
+		/*歌单列表样式*/
+		.song_list {width: 100%;height: 100%;padding: 0;overflow: auto }
+		.song_list::-webkit-scrollbar {width: .7vw;height: 1px }
+		.song_list::-webkit-scrollbar-thumb {border-radius: 10px;background-color: var(--scroll-bar);background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .2)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2)50%, rgba(255, 255, 255, .2)75%, transparent 75%, transparent) }
+		.song_list::-webkit-scrollbar-track {box-shadow: inset 0 0 5px rgba(255, 255, 255, .2);background: #ededed;border-radius: 10px }
+		.song_item {float: left;position: relative;margin: .5vh 1vw;width: 20vw;min-width: 330px;height: 9vh;background: var(--song-card);list-style-type: none;border-radius: 5px }
+		.song_item_claim {background: var(--song-card-claim) }
+		.claim {position: absolute;right: .3vw;top: .5vh;font-size: .8vw }
+		.info_tag_area {position: absolute;margin: .5vh .5vw;width: 18vw;display: inline-block;bottom: .5vh }
+		.info_tag {text-align: center;line-height: 2.5vh;min-width: 20px;font-size: .7vw;font-weight: 600;padding: 0 10px 0 10px;letter-spacing: 2px;border-radius: 5px;margin: 5px 10px 0 0;overflow: hidden;float: left;list-style-type: none;background-color: var(--tag-background);color: var(--tag-text) }
+		.song_info {position: absolute;width: 70%;padding-left: 20px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;word-break: break-all;top: 15px;font-size: large }
+		.song_info::after {position: absolute;content: "";width: 4px;height: 100%;background: var(--line-color);left: 12px;border-radius: 5px;opacity: .4 }
+	</style>
     <input type="hidden" id="type" value="全部">
     <input type="hidden" id="page" value="1">
-    <div class="view">
-        <div class="view_song card">
-            <div class="title">歌单</div>
-            <ul class="song_list" id="songs_list">
-            </ul>
-        </div>
-        <div class="view_bio">
-            <div class="bio card">
-                <div class="title">介绍</div>
-                <img class="face" src="" id="face">
-                <div class="nickname" id="nickname">Loading...</div>
-                <div class="user_data_box">
-                    <div class="user_data_part">
-                        <div class="user_data_title">等级</div>
-                        <div class="user_data_value" id="level">Loading...</div>
-                    </div>
-                    <div class="user_data_cutline"></div>
-                    <div class="user_data_part">
-                        <div class="user_data_title">关注</div>
-                        <div class="user_data_value" id="following">Loading...</div>
-                    </div>
-                    <div class="user_data_cutline"></div>
-                    <div class="user_data_part">
-                        <div class="user_data_title">粉丝</div>
-                        <div class="user_data_value" id="follower">Loading...</div>
-                    </div>
-                </div>
-                <div class="sign" id="sign"></div>
-            </div>
-            <div class="search_box card">
-                <div class="search_form">
-                    <input class="search_input" type="text" name="query" placeholder=" 点'搜索'进行随机或输入文字搜索" id="search"
-                        mark="pc">
-                    <button class="search_button">搜索</button>
-                </div>
-            </div>
-            <div class="notice_box card">
-                <div class="notice" id="notice">
-                    Loading...
-                </div>
-            </div>
-            <div class="type_box card">
-                <div class="title">标签</div>
-                <ul class="type_list" id="type_list">
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <footer>
-        <nav>
-            <ul>
-                <li><a href="https://space.bilibili.com/104092258" target="_blank">@2023 星川真纪版权所有</a></li>
+	<!-- 头部区域 -->
+	<div class="layui-header layui-bg-blue">
+	    <ul class="layui-nav layui-bg-blue layui-layout-left" lay-bar="disabled">
+	        <li class="layui-nav-item layui-font-24">知空的歌单站</li>
+	    </ul>
+		<ul class="layui-nav layui-bg-blue layui-layout-right">
+			<li class="layui-nav-item layui-font-20">
+				<a href="https://space.bilibili.com/28826850">
+					哔哩哔哩主页
+				</a>
+			</li>
+			<li class="layui-nav-item layui-font-20">
+				<a href="https://live.bilibili.com/1031542">
+					<i class="layui-icon layui-icon-video"></i> 直播间
+				</a>
+			</li>
+		</ul>
+	</div>
+	
+	<!-- 内容区域 -->
+	<div class="layui-container" style="top: 1rem;">
+		<div class="layui-fluid">
+			<div class="layui-row layui-col-space15">
+	
+				<div class="layui-col-md4">
+					<div class="layui-card">
+						<div class="layui-card-header"><i class="layui-icon layui-icon-username"></i> 主播介绍</div>
+						<div class="layui-card-body">
+							<div class="biocard">
+								<img class="face" src="" id="face">
+								<div class="nickname" id="nickname">Loading...</div>
+								<div class="user_data_box">
+									<div class="user_data_part">
+										<div class="user_data_title">等级</div>
+										<div class="user_data_value" id="level">Loading...</div>
+									</div>
+									<div class="user_data_cutline"></div>
+									<div class="user_data_part">
+										<div class="user_data_title">关注</div>
+										<div class="user_data_value" id="following">Loading...</div>
+									</div>
+									<div class="user_data_cutline"></div>
+									<div class="user_data_part">
+										<div class="user_data_title">粉丝</div>
+										<div class="user_data_value" id="follower">Loading...</div>
+									</div>
+								</div>
+							    <div class="sign" id="sign"></div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="layui-card">
+						<div class="layui-card-header"><i class="layui-icon layui-icon-notice"></i> 主播公告</div>
+						<div class="layui-card-body">
+							<div class="notice" id="notice">
+							    Loading...
+							</div>
+						</div>
+					</div>
+					
+					<div class="layui-card">
+						<div class="layui-card-body">
+							<div class="layui-form-item" style="margin-bottom: 0;">
+							    <div class="layui-input-group" style="width: 100%;">
+							        <input type="text" name="query" id="search" mark="pc" placeholder="点'搜索'进行随机或输入文字搜索" class="layui-input search_input">
+							        <div class="layui-input-split layui-input-suffix" style="cursor: pointer;width: 5%;">
+										<button class="search_button">搜索</button>  
+							        </div>
+							    </div>
+							</div>
+						</div>
+					</div>
+	
+					<div class="layui-card">
+						<div class="layui-card-header"><i class="layui-icon layui-icon-note"></i> 标签</div>
+						<div class="layui-card-body">
+							<ul class="type_list" id="type_list">
+							</ul>
+						</div>
+					</div>
+	
+	
+					<div class="layui-card">
+						<div class="layui-card-header">
+							<i class="layui-icon layui-icon-tips"></i> 关于本站
+						</div>
+						<div class="layui-card-body layui-text layadmin-text">
+							<blockquote class="layui-elem-quote">
+								<p>本项目开发者为B站UP主：星川真纪(Git：HaruhiYunona)</p>
+								<p>本人仅自主修改项目UI</p>
+								<p>Copyright &copy; 2024 桐原知空. | 使用<a href="https://github.com/HaruhiYunona/VioletBlue/">VioletBlue</a>搭建.</p>
+							</blockquote>
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-col-md8">
+					<div class="layui-row layui-col-space15">
+						<div class="layui-col-md12">
+							<div class="layui-card">
+								<div class="layui-card-header"><i class="layui-icon layui-icon-headset"></i> 歌单列表</div>
+								<div class="layui-card-body">
+									<ul class="song_list" id="songs_list">
+									</ul>
+								</div>
+							</div>		
+						</div>
+					</div>
+				</div>
+	
+			</div>
+		</div>
+	</div> 		            
+	
+	<!-- 引入 layui.js -->
+	<script src="//unpkg.com/layui@2.9.17/dist/layui.js"></script>
+	<script>
+	layui.use(function(){
+	  var util = layui.util;
+	  // 自定义固定条
+	  util.fixbar({
+	    bars: [{ // 定义可显示的 bar 列表信息 -- v2.8.0 新增
+	      type: 'help',
+	      icon: 'layui-icon-help'
+	    }, {
+	      type: 'groups',
+	      content: '群',
+	      style: 'font-size: 21px;'
+	    }],
+	    // 点击事件
+	    click: function(type){
+	      console.log(this, type);
+	      // layer.msg(type);
+	    }
+	  });
+	});
+	</script>
+</body>
